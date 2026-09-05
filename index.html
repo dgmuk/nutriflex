@@ -272,7 +272,15 @@ select.glass-input{appearance:none;-webkit-appearance:none}
   .ci-main{flex:1 1 100%}
   .ci-kcal{margin-left:auto}
   .actions button{min-width:100%}
-  .plate-outer{width:160px;height:160px}.plate{width:160px;height:160px}.plate-core{font-size:1.05rem}
+  .plate-wrap{flex-direction:column;align-items:center;gap:14px}
+  .plate-outer{width:160px;height:160px}.plate{width:160px;height:160px}
+  .plate-core{font-size:1rem}.plate-core .plate-bju{font-size:.5rem;gap:4px}
+  .legend{width:100%;min-width:0}
+  .leg-row{padding:6px 8px;gap:8px;font-size:.78rem}
+  .leg-row .l-main b{font-size:.82rem}
+  .leg-row .l-main small{font-size:.68rem}
+  .leg-row .l-pct{font-size:.82rem}
+  .leg-row .l-grams{font-size:.65rem}
   .meal-head{padding:14px 16px;gap:10px}
   .tabs{padding:12px 16px 0}
   .meal-body{padding:12px 16px 16px}
@@ -932,8 +940,7 @@ function plateHtml(meal) {
     '<div class="legend">' + rows.map(r =>
       '<div class="leg-row">' +
         '<div class="dot" style="background:' + r.c + ';box-shadow:0 0 10px ' + r.c + '44"></div>' +
-        '<div class="l-main"><b style="color:' + r.c + '">' + r.name + '</b><small>' + esc(r.prod) + '</small><small style="opacity:.7">' + esc(r.hand) + '</small></div>' +
-        '<div class="l-grams">' + r0(meal.targets[r.name === 'Жиры' ? 'f' : r.name === 'Белок' ? 'p' : r.name === 'Углеводы' ? 'c' : '']) + '</div>' +
+        '<div class="l-main"><b style="color:' + r.c + '">' + r.name + '</b><small>' + esc(r.prod) + '</small><small style="opacity:.6">' + esc(r.hand) + '</small></div>' +
         '<div class="l-pct" style="color:' + r.c + '">' + r.pct + '%</div>' +
       '</div>'
     ).join("") +
