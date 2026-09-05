@@ -174,18 +174,24 @@ input[type="range"]::-moz-range-thumb{width:20px;height:20px;background:var(--ac
 .bar-fill{height:100%;border-radius:9999px;transition:width 400ms ease}
 
 /* plate */
-.plate-wrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-.plate{width:132px;height:132px;border-radius:50%;flex:none;position:relative;box-shadow:0 0 30px rgba(0,0,0,.4)}
-.plate::after{content:"";position:absolute;inset:26%;border-radius:50%;background:var(--bg-card);border:1px solid var(--border)}
-.plate-core{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:2;font-family:var(--font-display);font-weight:700;font-size:.95rem;line-height:1.1}
-.plate-core small{font-family:var(--font-body);font-size:.65rem;color:var(--text-secondary);font-weight:400}
-.legend{flex:1;min-width:200px;display:flex;flex-direction:column;gap:10px}
-.leg-row{display:flex;gap:10px;align-items:flex-start;font-size:.82rem}
-.dot{width:10px;height:10px;border-radius:3px;margin-top:5px;flex:none}
+.plate-wrap{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.plate-outer{position:relative;width:210px;height:210px;flex:none}
+.plate{width:210px;height:210px;border-radius:50%;flex:none;position:relative;box-shadow:0 6px 40px rgba(0,0,0,.6), inset 0 0 0 3px rgba(255,255,255,.08);z-index:1}
+.plate::after{content:"";position:absolute;top:50%;left:50%;width:36%;height:36%;transform:translate(-50%,-50%);border-radius:50%;background:var(--bg-card);border:2px solid rgba(255,255,255,.08);box-shadow:0 2px 12px rgba(0,0,0,.5), inset 0 1px 4px rgba(0,0,0,.3);z-index:1}
+.plate-rim{position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(255,255,255,.06);pointer-events:none;z-index:0;box-shadow:0 0 20px rgba(0,0,0,.3)}
+.plate-core{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:3;font-family:var(--font-display);font-weight:900;font-size:1.3rem;line-height:1.1;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.plate-core small{font-family:var(--font-body);font-size:.65rem;color:rgba(255,255,255,.5);font-weight:400;margin-top:2px}
+.plate-core .plate-bju{display:flex;gap:6px;margin-top:4px;font-size:.55rem;font-family:var(--font-body);font-weight:500;letter-spacing:.03em}
+.plate-core .plate-bju span{padding:2px 5px;border-radius:4px;background:rgba(0,0,0,.35);white-space:nowrap}
+.legend{flex:1;min-width:200px;display:flex;flex-direction:column;gap:8px}
+.leg-row{display:flex;gap:10px;align-items:flex-start;font-size:.82rem;padding:8px 10px;border-radius:var(--radius);background:rgba(255,255,255,.03);border:1px solid transparent;transition:background .2s}
+.leg-row:hover{background:rgba(255,255,255,.06)}
+.dot{width:12px;height:12px;border-radius:4px;margin-top:4px;flex:none;box-shadow:0 0 8px rgba(0,0,0,.3)}
 .leg-row .l-main{flex:1;min-width:0}
-.leg-row .l-main b{font-weight:500}
-.leg-row .l-main small{display:block;color:var(--text-secondary);font-size:.74rem}
-.leg-row .l-pct{font-family:var(--font-display);font-weight:700;font-size:.85rem}
+.leg-row .l-main b{font-weight:600;font-size:.85rem}
+.leg-row .l-main small{display:block;color:var(--text-secondary);font-size:.72rem;margin-top:1px}
+.leg-row .l-pct{font-family:var(--font-display);font-weight:700;font-size:.9rem;flex:none;text-align:right}
+.leg-row .l-grams{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-body);text-align:right;min-width:32px}
 
 .hint{display:flex;gap:10px;align-items:flex-start;background:var(--accent-dim);border:1px solid var(--border-accent);border-radius:var(--radius);padding:11px 13px;font-size:.8rem;color:#e2f5b0}
 .hint svg{flex:none;margin-top:2px}
@@ -266,7 +272,7 @@ select.glass-input{appearance:none;-webkit-appearance:none}
   .ci-main{flex:1 1 100%}
   .ci-kcal{margin-left:auto}
   .actions button{min-width:100%}
-  .plate{width:112px;height:112px}
+  .plate-outer{width:160px;height:160px}.plate{width:160px;height:160px}.plate-core{font-size:1.05rem}
   .meal-head{padding:14px 16px;gap:10px}
   .tabs{padding:12px 16px 0}
   .meal-body{padding:12px 16px 16px}
@@ -888,28 +894,49 @@ function itemsHtml(meal) {
 
 function plateHtml(meal) {
   const pl = meal.plate;
-  const cVeg = "#34d399", cPro = "#60a5fa", cCarb = "#c8f542";
-  const a1 = pl.veg * 3.6, a2 = a1 + pl.pro * 3.6;
-  const grad = 'conic-gradient(' + cVeg + ' 0deg ' + a1 + 'deg,' + cPro + ' ' + a1 + 'deg ' + a2 + 'deg,' + cCarb + ' ' + a2 + 'deg 360deg)';
+  const fGrams = r0(meal.targets.f);
+  const fPct = Math.round(100 - pl.veg - pl.pro - pl.carb);
+  const cVeg = "#00e676", cPro = "#2979ff", cCarb = "#ffea00", cFat = "#ff6d00";
+  const a1 = pl.veg * 3.6, a2 = a1 + pl.pro * 3.6, a3 = a2 + pl.carb * 3.6;
+  const gap = 2;
+  const ag1 = gap, ag2 = a1 - gap, ag3 = a1 + gap, ag4 = a2 - gap, ag5 = a2 + gap, ag6 = a3 - gap;
+  const grad = 'conic-gradient(' +
+    cVeg + ' ' + ag1 + 'deg ' + ag2 + 'deg, ' +
+    'transparent ' + ag2 + 'deg ' + ag3 + 'deg, ' +
+    cPro + ' ' + ag3 + 'deg ' + ag4 + 'deg, ' +
+    'transparent ' + ag4 + 'deg ' + ag5 + 'deg, ' +
+    cCarb + ' ' + ag5 + 'deg ' + ag6 + 'deg, ' +
+    'transparent ' + ag6 + 'deg ' + (a3 + gap) + 'deg, ' +
+    cFat + ' ' + (a3 + gap) + 'deg ' + (360 - gap) + 'deg, ' +
+    'transparent ' + (360 - gap) + 'deg 360deg)';
+
   const rows = [
-    { c:cVeg, pct:pl.veg, name:"Овощи и клетчатка", hand:BY_ID[meal.sources.fiber].hand, prod:BY_ID[meal.sources.fiber].name },
+    { c:cVeg, pct:pl.veg, name:"Овощи", hand:BY_ID[meal.sources.fiber].hand, prod:BY_ID[meal.sources.fiber].name },
     { c:cPro, pct:pl.pro, name:"Белок", hand:BY_ID[meal.sources.protein].hand, prod:BY_ID[meal.sources.protein].name },
-    { c:cCarb, pct:pl.carb, name:"Углеводы", hand:BY_ID[meal.sources.carb].hand, prod:BY_ID[meal.sources.carb].name }
+    { c:cCarb, pct:pl.carb, name:"Углеводы", hand:BY_ID[meal.sources.carb].hand, prod:BY_ID[meal.sources.carb].name },
+    { c:cFat, pct:fPct, name:"Жиры", hand:BY_ID[meal.sources.fat].hand, prod:BY_ID[meal.sources.fat].name }
   ];
+
   return '<div class="plate-wrap">' +
-    '<div class="plate" style="background:' + grad + '" role="img" aria-label="Тарелка: овощи ' + pl.veg + '%, белок ' + pl.pro + '%, углеводы ' + pl.carb + '%">' +
-      '<div class="plate-core">' + r0(meal.targets.cal) + '<small>ккал</small></div>' +
+    '<div class="plate-outer">' +
+      '<div class="plate-rim"></div>' +
+      '<div class="plate" style="background:' + grad + '" role="img" aria-label="Тарелка">' +
+        '<div class="plate-core">' +
+          r0(meal.targets.cal) + '<small>ккал</small>' +
+          '<div class="plate-bju"><span style="color:' + cPro + '">Б ' + r0(meal.targets.p) + 'г</span>' +
+          '<span style="color:' + cFat + '">Ж ' + fGrams + 'г</span>' +
+          '<span style="color:' + cCarb + '">У ' + r0(meal.targets.c) + 'г</span></div>' +
+        '</div>' +
+      '</div>' +
     '</div>' +
     '<div class="legend">' + rows.map(r =>
       '<div class="leg-row">' +
-        '<div class="dot" style="background:' + r.c + '"></div>' +
-        '<div class="l-main"><b>' + r.name + '</b><small>' + esc(r.prod) + ' · ' + esc(r.hand) + '</small></div>' +
+        '<div class="dot" style="background:' + r.c + ';box-shadow:0 0 10px ' + r.c + '44"></div>' +
+        '<div class="l-main"><b style="color:' + r.c + '">' + r.name + '</b><small>' + esc(r.prod) + '</small><small style="opacity:.7">' + esc(r.hand) + '</small></div>' +
+        '<div class="l-grams">' + r0(meal.targets[r.name === 'Жиры' ? 'f' : r.name === 'Белок' ? 'p' : r.name === 'Углеводы' ? 'c' : '']) + '</div>' +
         '<div class="l-pct" style="color:' + r.c + '">' + r.pct + '%</div>' +
       '</div>'
     ).join("") +
-    '<div class="leg-row"><div class="dot" style="background:var(--gold)"></div>' +
-      '<div class="l-main"><b>Жиры</b><small>' + esc(BY_ID[meal.sources.fat].name) + ' · ' + esc(BY_ID[meal.sources.fat].hand) + '</small></div>' +
-      '<div class="l-pct" style="color:var(--gold)">' + r0(meal.targets.f) + ' г</div></div>' +
     '</div></div>';
 }
 
