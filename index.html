@@ -175,23 +175,39 @@ input[type="range"]::-moz-range-thumb{width:20px;height:20px;background:var(--ac
 
 /* plate */
 .plate-wrap{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
-.plate-outer{position:relative;width:210px;height:210px;flex:none}
-.plate{width:210px;height:210px;border-radius:50%;flex:none;position:relative;box-shadow:0 6px 40px rgba(0,0,0,.6), inset 0 0 0 3px rgba(255,255,255,.08);z-index:1}
+.plate-outer{position:relative;width:180px;height:180px;flex:none}
+.plate{width:180px;height:180px;border-radius:50%;flex:none;position:relative;box-shadow:0 6px 40px rgba(0,0,0,.6), inset 0 0 0 3px rgba(255,255,255,.08);z-index:1}
 .plate::after{content:"";position:absolute;top:50%;left:50%;width:36%;height:36%;transform:translate(-50%,-50%);border-radius:50%;background:var(--bg-card);border:2px solid rgba(255,255,255,.08);box-shadow:0 2px 12px rgba(0,0,0,.5), inset 0 1px 4px rgba(0,0,0,.3);z-index:1}
 .plate-rim{position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(255,255,255,.06);pointer-events:none;z-index:0;box-shadow:0 0 20px rgba(0,0,0,.3)}
-.plate-core{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:3;font-family:var(--font-display);font-weight:900;font-size:1.3rem;line-height:1.1;text-shadow:0 2px 8px rgba(0,0,0,.5)}
-.plate-core small{font-family:var(--font-body);font-size:.65rem;color:rgba(255,255,255,.5);font-weight:400;margin-top:2px}
-.plate-core .plate-bju{display:flex;gap:6px;margin-top:4px;font-size:.55rem;font-family:var(--font-body);font-weight:500;letter-spacing:.03em}
-.plate-core .plate-bju span{padding:2px 5px;border-radius:4px;background:rgba(0,0,0,.35);white-space:nowrap}
-.legend{flex:1;min-width:200px;display:flex;flex-direction:column;gap:8px}
-.leg-row{display:flex;gap:10px;align-items:flex-start;font-size:.82rem;padding:8px 10px;border-radius:var(--radius);background:rgba(255,255,255,.03);border:1px solid transparent;transition:background .2s}
-.leg-row:hover{background:rgba(255,255,255,.06)}
-.dot{width:12px;height:12px;border-radius:4px;margin-top:4px;flex:none;box-shadow:0 0 8px rgba(0,0,0,.3)}
-.leg-row .l-main{flex:1;min-width:0}
-.leg-row .l-main b{font-weight:600;font-size:.85rem}
-.leg-row .l-main small{display:block;color:var(--text-secondary);font-size:.72rem;margin-top:1px}
-.leg-row .l-pct{font-family:var(--font-display);font-weight:700;font-size:.9rem;flex:none;text-align:right}
-.leg-row .l-grams{font-size:.7rem;color:var(--text-secondary);font-family:var(--font-body);text-align:right;min-width:32px}
+.plate-core{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:3;font-family:var(--font-display);font-weight:900;font-size:1.2rem;line-height:1.1;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.plate-core small{font-family:var(--font-body);font-size:.6rem;color:rgba(255,255,255,.5);font-weight:400;margin-top:2px}
+.plate-core .plate-bju{display:flex;gap:4px;margin-top:3px;font-size:.5rem;font-family:var(--font-body);font-weight:500;letter-spacing:.03em}
+.plate-core .plate-bju span{padding:2px 4px;border-radius:3px;background:rgba(0,0,0,.35);white-space:nowrap}
+
+/* plate view — full layout */
+.plate-view{display:flex;flex-direction:column;gap:14px}
+.plate-donut-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center}
+.plate-legend-compact{display:flex;flex-direction:column;gap:6px;min-width:160px;flex:1}
+.plate-legend-row{display:flex;align-items:center;gap:8px;font-size:.8rem;padding:4px 0}
+.plate-legend-dot{width:8px;height:8px;border-radius:3px;flex:none}
+.plate-legend-text{flex:1;min-width:0}
+.plate-legend-text b{font-weight:600;font-size:.82rem}
+.plate-legend-text small{display:block;font-size:.7rem;color:var(--text-secondary)}
+.plate-legend-pct{font-family:var(--font-display);font-weight:700;font-size:.85rem;flex:none}
+
+/* plate sections — actual food items grouped by category */
+.plate-sections{display:flex;flex-direction:column;gap:4px}
+.plate-section{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.plate-section-head{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.plate-section-dot{width:10px;height:10px;border-radius:3px;flex:none}
+.plate-section-label{flex:1;font-size:.82rem;font-weight:600}
+.plate-section-pct{font-family:var(--font-display);font-weight:700;font-size:.82rem}
+.plate-section-items{padding:6px 12px}
+.plate-food-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.78rem}
+.plate-food-item:last-child{border-bottom:none}
+.plate-food-name{flex:1;min-width:0;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plate-food-grams{font-family:var(--font-display);font-weight:600;font-size:.75rem;color:var(--text-primary);white-space:nowrap}
+.plate-food-kcal{font-size:.7rem;color:var(--text-secondary);white-space:nowrap}
 
 .hint{display:flex;gap:10px;align-items:flex-start;background:var(--accent-dim);border:1px solid var(--border-accent);border-radius:var(--radius);padding:11px 13px;font-size:.8rem;color:#e2f5b0}
 .hint svg{flex:none;margin-top:2px}
@@ -272,15 +288,11 @@ select.glass-input{appearance:none;-webkit-appearance:none}
   .ci-main{flex:1 1 100%}
   .ci-kcal{margin-left:auto}
   .actions button{min-width:100%}
-  .plate-wrap{flex-direction:column;align-items:center;gap:14px}
-  .plate-outer{width:160px;height:160px}.plate{width:160px;height:160px}
-  .plate-core{font-size:1rem}.plate-core .plate-bju{font-size:.5rem;gap:4px}
-  .legend{width:100%;min-width:0}
-  .leg-row{padding:6px 8px;gap:8px;font-size:.78rem}
-  .leg-row .l-main b{font-size:.82rem}
-  .leg-row .l-main small{font-size:.68rem}
-  .leg-row .l-pct{font-size:.82rem}
-  .leg-row .l-grams{font-size:.65rem}
+  .plate-donut-row{flex-direction:column;align-items:center;gap:10px}
+  .plate-outer{width:150px;height:150px}.plate{width:150px;height:150px}
+  .plate-core{font-size:.95rem}.plate-core .plate-bju{font-size:.45rem;gap:3px}
+  .plate-legend-compact{width:100%;min-width:0}
+  .plate-legend-row{font-size:.76rem}
   .meal-head{padding:14px 16px;gap:10px}
   .tabs{padding:12px 16px 0}
   .meal-body{padding:12px 16px 16px}
@@ -902,49 +914,84 @@ function itemsHtml(meal) {
 
 function plateHtml(meal) {
   const pl = meal.plate;
-  const fGrams = r0(meal.targets.f);
-  const fPct = Math.round(100 - pl.veg - pl.pro - pl.carb);
+  const fPct = Math.max(0, 100 - pl.veg - pl.pro - pl.carb);
   const cVeg = "#00e676", cPro = "#2979ff", cCarb = "#ffea00", cFat = "#ff6d00";
   const a1 = pl.veg * 3.6, a2 = a1 + pl.pro * 3.6, a3 = a2 + pl.carb * 3.6;
   const gap = 2;
-  const ag1 = gap, ag2 = a1 - gap, ag3 = a1 + gap, ag4 = a2 - gap, ag5 = a2 + gap, ag6 = a3 - gap;
   const grad = 'conic-gradient(' +
-    cVeg + ' ' + ag1 + 'deg ' + ag2 + 'deg, ' +
-    'transparent ' + ag2 + 'deg ' + ag3 + 'deg, ' +
-    cPro + ' ' + ag3 + 'deg ' + ag4 + 'deg, ' +
-    'transparent ' + ag4 + 'deg ' + ag5 + 'deg, ' +
-    cCarb + ' ' + ag5 + 'deg ' + ag6 + 'deg, ' +
-    'transparent ' + ag6 + 'deg ' + (a3 + gap) + 'deg, ' +
-    cFat + ' ' + (a3 + gap) + 'deg ' + (360 - gap) + 'deg, ' +
-    'transparent ' + (360 - gap) + 'deg 360deg)';
+    cVeg + ' ' + gap + 'deg ' + (a1 - gap) + 'deg, transparent ' + (a1 - gap) + 'deg ' + (a1 + gap) + 'deg, ' +
+    cPro + ' ' + (a1 + gap) + 'deg ' + (a2 - gap) + 'deg, transparent ' + (a2 - gap) + 'deg ' + (a2 + gap) + 'deg, ' +
+    cCarb + ' ' + (a2 + gap) + 'deg ' + (a3 - gap) + 'deg, transparent ' + (a3 - gap) + 'deg ' + (a3 + gap) + 'deg, ' +
+    cFat + ' ' + (a3 + gap) + 'deg ' + (360 - gap) + 'deg, transparent ' + (360 - gap) + 'deg 360deg)';
 
-  const rows = [
-    { c:cVeg, pct:pl.veg, name:"Овощи", hand:BY_ID[meal.sources.fiber].hand, prod:BY_ID[meal.sources.fiber].name },
-    { c:cPro, pct:pl.pro, name:"Белок", hand:BY_ID[meal.sources.protein].hand, prod:BY_ID[meal.sources.protein].name },
-    { c:cCarb, pct:pl.carb, name:"Углеводы", hand:BY_ID[meal.sources.carb].hand, prod:BY_ID[meal.sources.carb].name },
-    { c:cFat, pct:fPct, name:"Жиры", hand:BY_ID[meal.sources.fat].hand, prod:BY_ID[meal.sources.fat].name }
+  // actual items from meal, grouped by plate section
+  const CAT_MAP = { fiber:"veg", protein:"pro", carb:"carb", fruit:"carb", fat:"fat", supp:"supp" };
+  const SECTIONS = [
+    { key:"veg", label:"Овощи и клетчатка", color:cVeg, pct:pl.veg },
+    { key:"pro", label:"Белок", color:cPro, pct:pl.pro },
+    { key:"carb", label:"Углеводы", color:cCarb, pct:pl.carb },
+    { key:"fat", label:"Жиры", color:cFat, pct:fPct }
   ];
+  const grouped = { veg:[], pro:[], carb:[], fat:[] };
+  (meal.state.items || []).forEach(it => {
+    const p = BY_ID[it.id]; if (!p) return;
+    const sec = CAT_MAP[p.cat] || "carb";
+    if (grouped[sec]) grouped[sec].push({ ...it, product:p });
+  });
 
-  return '<div class="plate-wrap">' +
-    '<div class="plate-outer">' +
-      '<div class="plate-rim"></div>' +
-      '<div class="plate" style="background:' + grad + '" role="img" aria-label="Тарелка">' +
-        '<div class="plate-core">' +
-          r0(meal.targets.cal) + '<small>ккал</small>' +
-          '<div class="plate-bju"><span style="color:' + cPro + '">Б ' + r0(meal.targets.p) + 'г</span>' +
-          '<span style="color:' + cFat + '">Ж ' + fGrams + 'г</span>' +
-          '<span style="color:' + cCarb + '">У ' + r0(meal.targets.c) + 'г</span></div>' +
+  let sectionsHtml = SECTIONS.map(s => {
+    const items = grouped[s.key];
+    const itemsList = items.map(it => {
+      const k = it.grams / 100;
+      return '<div class="plate-food-item">' +
+        '<span class="plate-food-name">' + esc(it.product.name) + '</span>' +
+        '<span class="plate-food-grams">' + it.grams + ' г</span>' +
+        '<span class="plate-food-kcal">' + r0(it.product.cals * k) + ' ккал</span>' +
+      '</div>';
+    }).join("");
+    return '<div class="plate-section">' +
+      '<div class="plate-section-head">' +
+        '<span class="plate-section-dot" style="background:' + s.color + ';box-shadow:0 0 8px ' + s.color + '55"></span>' +
+        '<span class="plate-section-label">' + s.label + '</span>' +
+        '<span class="plate-section-pct" style="color:' + s.color + '">' + s.pct + '%</span>' +
+      '</div>' +
+      (itemsList ? '<div class="plate-section-items">' + itemsList + '</div>' : '<div class="plate-section-items"><span style="color:var(--text-muted);font-size:.75rem">нет продуктов</span></div>') +
+    '</div>';
+  }).join("");
+
+  const totals = sumItems(meal.state.items || []);
+
+  return '<div class="plate-view">' +
+    '<div class="plate-donut-row">' +
+      '<div class="plate-outer">' +
+        '<div class="plate-rim"></div>' +
+        '<div class="plate" style="background:' + grad + '" role="img" aria-label="Тарелка">' +
+          '<div class="plate-core">' +
+            r0(totals.cal) + '<small>ккал</small>' +
+            '<div class="plate-bju">' +
+              '<span style="color:' + cPro + '">Б ' + r0(totals.p) + '</span>' +
+              '<span style="color:' + cFat + '">Ж ' + r0(totals.f) + '</span>' +
+              '<span style="color:' + cCarb + '">У ' + r0(totals.c) + '</span>' +
+            '</div>' +
+          '</div>' +
         '</div>' +
       '</div>' +
+      '<div class="plate-legend-compact">' + SECTIONS.map(s => {
+        const sumP = grouped[s.key].reduce((a, it) => a + it.product.p * it.grams / 100, 0);
+        const sumF = grouped[s.key].reduce((a, it) => a + it.product.f * it.grams / 100, 0);
+        const sumC = grouped[s.key].reduce((a, it) => a + it.product.c * it.grams / 100, 0);
+        const macroLabel = s.key === "veg" ? "" : s.key === "pro" ? "Б " + r0(sumP) + "г" :
+          s.key === "carb" ? "У " + r0(sumC) + "г" : "Ж " + r0(sumF) + "г";
+        return '<div class="plate-legend-row">' +
+          '<div class="plate-legend-dot" style="background:' + s.color + '"></div>' +
+          '<div class="plate-legend-text"><b style="color:' + s.color + '">' + s.label + '</b>' +
+            (macroLabel ? '<small>' + macroLabel + '</small>' : '') + '</div>' +
+          '<div class="plate-legend-pct" style="color:' + s.color + '">' + s.pct + '%</div>' +
+        '</div>';
+      }).join("") + '</div>' +
     '</div>' +
-    '<div class="legend">' + rows.map(r =>
-      '<div class="leg-row">' +
-        '<div class="dot" style="background:' + r.c + ';box-shadow:0 0 10px ' + r.c + '44"></div>' +
-        '<div class="l-main"><b style="color:' + r.c + '">' + r.name + '</b><small>' + esc(r.prod) + '</small><small style="opacity:.6">' + esc(r.hand) + '</small></div>' +
-        '<div class="l-pct" style="color:' + r.c + '">' + r.pct + '%</div>' +
-      '</div>'
-    ).join("") +
-    '</div></div>';
+    '<div class="plate-sections">' + sectionsHtml + '</div>' +
+  '</div>';
 }
 
 function renderTimeline() {
@@ -960,7 +1007,7 @@ function renderTimeline() {
       body = cafeHtml(m);
     } else {
       body = plateHtml(m) +
-        '<p class="footnote">Метод пропорций: заполните тарелку в этих долях, объём — по кисти руки. Взвешивать не нужно.</p>';
+        '<p class="footnote">Тарелка показывает реальные продукты из этого приёма, сгруппированные по секциям. Переключитесь на «Граммы», чтобы добавить или заменить продукт.</p>';
     }
 
     const hints = (m.note ? ['<div class="hint"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M7 4.2v.1M7 6.2v3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><div>' + esc(m.note) + '</div></div>'] : [])
