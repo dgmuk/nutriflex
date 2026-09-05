@@ -299,12 +299,6 @@ select.glass-input{appearance:none;-webkit-appearance:none}
   .meal-body{padding:12px 16px 16px}
   .water-btn{width:44px;height:44px;font-size:1.3rem}
   .water-count{font-size:1rem}
-  .presets-card{padding:14px 16px}
-  .preset-save-row{flex-direction:column;gap:8px}
-  .preset-save-row input{width:100%}
-  .preset-save-row .glass-button{width:100%}
-  .preset-name{font-size:.9rem;padding:4px 0}
-  .preset-row .icon-btn{width:40px;height:40px}
   .cooked-info{font-size:.68rem}
 }
 @media (min-width:640px){.modal-overlay{align-items:center;padding:1rem}}
@@ -313,25 +307,23 @@ select.glass-input{appearance:none;-webkit-appearance:none}
 /* cooked weight info */
 .cooked-info{font-size:.72rem;color:var(--accent);opacity:.8;margin-top:2px}
 
-/* presets */
-.presets-card{padding:16px 20px}
-.presets-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
-.preset-row{display:flex;align-items:center;gap:8px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px}
-.preset-name{flex:1;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;min-width:0;background:transparent;border:none;color:var(--text-primary);text-align:left;font-family:var(--font-body);display:flex;align-items:center;gap:6px}
-.preset-name:hover{color:var(--accent)}
-.preset-badge{font-size:.6rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border-accent);border-radius:4px;padding:1px 5px;white-space:nowrap;flex:none;font-weight:500}
-.preset-empty{font-size:.8rem;color:var(--text-muted);padding:4px 0;margin-bottom:6px}
-.preset-save-row{display:flex;gap:8px;align-items:center}
-.preset-save-row input{flex:1}
-
-/* meal preset chips & save button */
-.meal-actions-row{display:flex;gap:8px;flex-wrap:wrap}
-.meal-actions-row .glass-button-secondary{flex:1;min-width:0}
+/* presets — inline in meal cards */
+.preset-section{margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.preset-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.preset-header-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);font-family:var(--font-display);font-weight:600}
+.preset-add-btn{background:transparent;border:1px solid var(--border);color:var(--text-secondary);border-radius:9999px;padding:4px 12px;font-size:.72rem;cursor:pointer;transition:all 200ms;min-height:32px}
+.preset-add-btn:hover{border-color:var(--border-accent);color:var(--accent)}
 .preset-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.preset-chip{background:var(--bg-elevated);border:1px solid var(--border-accent);color:var(--accent);border-radius:9999px;padding:5px 12px;font-size:.75rem;cursor:pointer;transition:all 200ms;min-height:32px;white-space:nowrap}
-.preset-chip:hover{background:var(--accent-dim);border-color:var(--accent)}
-.preset-save-meal{flex:none;display:inline-flex;align-items:center;gap:4px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-secondary);border-radius:.75rem;padding:8px 14px;font-size:.8rem;cursor:pointer;transition:all 200ms;min-height:40px;white-space:nowrap;font-family:var(--font-body)}
-.preset-save-meal:hover{border-color:var(--border-accent);color:var(--accent)}
+.preset-chip{background:var(--bg-elevated);border:1px solid var(--border-accent);color:var(--accent);border-radius:9999px;padding:5px 10px;font-size:.75rem;cursor:pointer;transition:all 200ms;min-height:32px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.preset-chip:hover{background:var(--accent-dim)}
+.preset-chip-x{font-size:.85rem;opacity:.5;cursor:pointer;padding:0 2px}
+.preset-chip-x:hover{opacity:1;color:var(--danger)}
+.preset-hint{font-size:.72rem;color:var(--text-muted);font-style:italic}
+.preset-save-form{display:flex;gap:6px;margin-top:8px;align-items:center}
+.preset-save-input{flex:1;border-radius:.6rem;padding:8px 10px;font-size:.85rem;background:var(--bg-card);border:1px solid var(--border);color:var(--text-primary);font-family:var(--font-body)}
+.preset-save-input:focus{outline:none;border-color:var(--border-accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.preset-save-confirm{background:var(--accent);color:var(--bg-main);border:none;border-radius:.6rem;padding:8px 16px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:var(--font-display)}
+.preset-save-confirm:hover{filter:brightness(1.1)}
 
 /* water tracker */
 .water-section{margin-top:16px}
@@ -442,11 +434,6 @@ select.glass-input{appearance:none;-webkit-appearance:none}
         <button type="button" class="tag" data-v="creatine" aria-pressed="false">Креатин моногидрат</button>
         <button type="button" class="tag" data-v="beta_alanine" aria-pressed="false">Бета-аланин</button>
       </div>
-    </div>
-
-    <div class="glass-card card presets-card">
-      <div class="card-title">Мои пресеты</div>
-      <div class="presets-grid" id="presetsList"></div>
     </div>
 
     <div class="actions">
@@ -1006,28 +993,41 @@ function renderTimeline() {
     const mode = m.state.mode;
     let body;
 
-    // preset chips for this meal (always visible, any mode)
-    const matchingPresets = state.presets.filter(p => p.mealKey === m.key);
-    const presetChips = matchingPresets.length
-      ? '<div class="preset-chips">' +
-        matchingPresets.map(p =>
-          '<button class="preset-chip" type="button" data-act="preset-apply" data-meal="' + m.key + '" data-pid="' + p.id + '" title="Загрузить: ' + esc(p.name) + '">★ ' + esc(p.name) + '</button>'
-        ).join("") + '</div>'
-      : '';
+    // inline preset section (grams mode only)
+    let presetSection = '';
+    if (mode === "grams") {
+      const matchingPresets = state.presets.filter(p => p.mealKey === m.key);
+      const chipsHtml = matchingPresets.length
+        ? matchingPresets.map(p =>
+            '<button class="preset-chip" type="button" data-act="preset-apply" data-meal="' + m.key + '" data-pid="' + p.id + '">' + esc(p.name) +
+            ' <span class="preset-chip-x" data-act="preset-del-inline" data-meal="' + m.key + '" data-pid="' + p.id + '" title="Удалить">×</span></button>'
+          ).join("")
+        : '';
+      presetSection = '<div class="preset-section">' +
+        '<div class="preset-header">' +
+          '<span class="preset-header-label">Мои пресеты</span>' +
+          '<button class="preset-add-btn" type="button" data-act="preset-toggle-save" data-meal="' + m.key + '">+ Сохранить</button>' +
+        '</div>' +
+        (chipsHtml ? '<div class="preset-chips">' + chipsHtml + '</div>' : '<div class="preset-chips"><span class="preset-hint">Здесь появятся сохранённые наборы продуктов</span></div>') +
+        '<div class="preset-save-form hidden" id="presetForm_' + m.key + '">' +
+          '<input class="preset-save-input" type="text" placeholder="Например: ' + esc(m.name) + '" data-meal="' + m.key + '">' +
+          '<button class="preset-save-confirm" type="button" data-act="preset-save-confirm" data-meal="' + m.key + '">OK</button>' +
+        '</div>' +
+      '</div>';
+    }
 
     if (mode === "grams") {
-      body = presetChips +
-        itemsHtml(m) +
+      body = itemsHtml(m) +
         '<div class="meal-actions-row">' +
           '<button class="glass-button-secondary" type="button" data-act="add" data-meal="' + m.key + '">+ Добавить продукт</button>' +
-          '<button class="preset-save-meal" type="button" data-act="preset-save-meal" data-meal="' + m.key + '" title="Сохранить текущий набор продуктов как пресет">★ Сохранить пресет</button>' +
         '</div>' +
         barsHtml(m) +
-        '<div style="font-size:.78rem;color:var(--text-secondary);margin-top:6px">Клетчатка: <b style="color:var(--accent)">' + r0(fiberOfItems(m.state.items)) + ' г</b></div>';
+        '<div style="font-size:.78rem;color:var(--text-secondary);margin-top:6px">Клетчатка: <b style="color:var(--accent)">' + r0(fiberOfItems(m.state.items)) + ' г</b></div>' +
+        presetSection;
     } else if (mode === "cafe") {
-      body = cafeHtml(m) + presetChips;
+      body = cafeHtml(m);
     } else {
-      body = presetChips + plateHtml(m) +
+      body = plateHtml(m) +
         '<p class="footnote">Переключитесь на «Граммы», чтобы добавить или заменить продукт.</p>';
     }
 
@@ -1050,7 +1050,7 @@ function renderTimeline() {
   }).join("");
 }
 
-function render() { renderSummary(); renderTimeline(); renderPresets(); }
+function render() { renderSummary(); renderTimeline(); }
 
 
 /* ================= КАФЕ И СТОЛОВКА ================= */
@@ -1476,40 +1476,7 @@ document.getElementById("tagSupps").addEventListener("click", e => {
 document.getElementById("btnRebuild").addEventListener("click", () => { recompute(true); render(); toast("Меню пересобрано под текущие параметры"); });
 
 /* ================= ПРЕСЕТЫ ================= */
-function renderPresets() {
-  const el = document.getElementById("presetsList");
-  if (!el) return;
-  if (!state.presets.length) { el.innerHTML = '<div class="preset-empty">Сохраните набор продуктов в любом приёме кнопкой «Сохранить как пресет» ниже списка продуктов.</div>'; return; }
-  el.innerHTML = state.presets.map(p =>
-    '<div class="preset-row">' +
-      '<button class="preset-name" type="button" data-act="preset-load" data-pid="' + p.id + '" title="Загрузить">' + esc(p.name) +
-      '<span class="preset-badge">' + esc(p.mealName || "Приём") + '</span></button>' +
-      '<button class="icon-btn" type="button" data-act="preset-del" data-pid="' + p.id + '" title="Удалить" aria-label="Удалить пресет">' +
-        '<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>' +
-      '</button>' +
-    '</div>'
-  ).join("");
-}
-
-document.querySelector(".presets-card")?.addEventListener("click", e => {
-  const b = e.target.closest("[data-act]"); if (!b) return;
-  const act = b.dataset.act, pid = b.dataset.pid;
-  if (act === "preset-load") {
-    const pr = state.presets.find(x => x.id === pid);
-    if (!pr) return;
-    const meal = MEALS.find(m => m.key === pr.mealKey);
-    if (!meal) { toast("Приём «" + (pr.mealName || "") + "» не найден в текущем меню"); return; }
-    state.mealState[pr.mealKey].items = JSON.parse(JSON.stringify(pr.items));
-    state.mealState[pr.mealKey].touched = true;
-    refresh();
-    toast("Пресет «" + pr.name + "» загружен");
-  } else if (act === "preset-del") {
-    state.presets = state.presets.filter(x => x.id !== pid);
-    persist();
-    renderPresets();
-    toast("Пресет удалён");
-  }
-});
+function renderPresets() {} // no-op, presets now inline in meal cards
 
 document.getElementById("timeline").addEventListener("click", e => {
   const b = e.target.closest("[data-act]"); if (!b) return;
@@ -1541,20 +1508,33 @@ document.getElementById("timeline").addEventListener("click", e => {
     refresh();
     toast("Пресет «" + pr.name + "» загружен");
   }
-  else if (act === "preset-save-meal") {
+  else if (act === "preset-toggle-save") {
+    const form = document.getElementById("presetForm_" + mk);
+    if (form) { form.classList.toggle("hidden"); if (!form.classList.contains("hidden")) form.querySelector("input").focus(); }
+  }
+  else if (act === "preset-save-confirm") {
+    const form = document.getElementById("presetForm_" + mk);
+    if (!form) return;
+    const inp = form.querySelector("input");
+    const name = (inp.value || "").trim();
+    if (!name) { inp.focus(); return; }
     const meal = MEALS.find(m2 => m2.key === mk);
-    const name = prompt("Название пресета для «" + (meal ? meal.name : mk) + "»:", meal ? meal.name : "");
-    if (!name || !name.trim()) return;
     state.presets.push({
-      id:"pr_" + Date.now().toString(36), name:name.trim(), timestamp:Date.now(),
+      id:"pr_" + Date.now().toString(36), name, timestamp:Date.now(),
       items:JSON.parse(JSON.stringify(state.mealState[mk].items)),
       mealKey:mk,
       mealName: meal ? meal.name : mk
     });
     persist();
-    renderPresets();
     renderTimeline();
-    toast("Пресет «" + name.trim() + "» сохранён");
+    toast("Пресет «" + name + "» сохранён");
+  }
+  else if (act === "preset-del-inline") {
+    e.stopPropagation();
+    state.presets = state.presets.filter(x => x.id !== b.dataset.pid);
+    persist();
+    renderTimeline();
+    toast("Пресет удалён");
   }
 });
 document.getElementById("timeline").addEventListener("input", e => {
@@ -1573,6 +1553,13 @@ document.getElementById("timeline").addEventListener("input", e => {
 });
 
 document.addEventListener("keydown", e => { if (e.key === "Escape") closePicker(); });
+document.getElementById("timeline").addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.classList.contains("preset-save-input")) {
+    const mk = e.target.dataset.meal;
+    const btn = e.target.closest(".preset-save-form").querySelector("[data-act='preset-save-confirm']");
+    if (btn) btn.click();
+  }
+});
 
 /* ================= ВОДА: ОБРАБОТЧИКИ ================= */
 document.getElementById("summary").addEventListener("click", e => {
