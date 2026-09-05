@@ -92,12 +92,12 @@ input[type="range"]::-moz-range-thumb{width:20px;height:20px;background:var(--ac
 
 /* ============ APP LAYOUT ============ */
 .topbar{position:sticky;top:0;z-index:40;background:rgba(13,13,13,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.topbar-inner{max-width:var(--max-width-wide);margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:12px;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.topbar-inner{max-width:var(--max-width-wide);margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:12px;justify-content:space-between;min-width:0}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1;overflow:hidden}
 .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent-glow);flex:none}
-.brand h1{font-size:1.05rem;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand h1{font-size:1.05rem;font-weight:700;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis}
 .brand span{display:block;font-family:var(--font-body);font-size:.75rem;color:var(--text-secondary);font-weight:400}
-.kcal-chip{font-family:var(--font-display);font-weight:700;font-size:1rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border-accent);padding:8px 14px;border-radius:9999px;white-space:nowrap}
+.kcal-chip{font-family:var(--font-display);font-weight:700;font-size:.9rem;color:var(--accent);background:var(--accent-dim);border:1px solid var(--border-accent);padding:6px 12px;border-radius:9999px;white-space:nowrap;flex:none}
 
 .layout{max-width:var(--max-width-wide);margin:0 auto;padding:24px 24px 64px;display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:24px;align-items:start}
 .col{display:flex;flex-direction:column;gap:16px;min-width:0}
@@ -267,7 +267,10 @@ select.glass-input{appearance:none;-webkit-appearance:none}
 @media (max-width:900px){
   .layout{grid-template-columns:minmax(0,1fr);padding:16px 16px 56px;gap:16px}
   .col-form{position:static;max-height:none;overflow:visible;padding-right:0}
-  .topbar-inner{padding:12px 16px}
+  .topbar-inner{padding:10px 12px;gap:8px}
+  .brand h1{font-size:.88rem}
+  .brand span{font-size:.68rem}
+  .kcal-chip{font-size:.78rem;padding:5px 9px}
 }
 @media (max-width:640px){
   .glass-card{border-radius:1rem}
@@ -278,8 +281,6 @@ select.glass-input{appearance:none;-webkit-appearance:none}
   .card{padding:16px}
   .macro-grid{grid-template-columns:1fr 1fr}
   .summary-head h2{font-size:1.4rem}
-  .brand h1{font-size:.95rem}
-  .kcal-chip{font-size:.85rem;padding:7px 11px}
   .g-input{width:66px;padding:8px 6px}
   .item{gap:8px;padding:10px}
   .item-main .i-name{white-space:normal}
