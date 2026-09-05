@@ -325,12 +325,13 @@ select.glass-input{appearance:none;-webkit-appearance:none}
 .preset-save-row input{flex:1}
 
 /* meal preset chips & save button */
-.preset-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px}
-.preset-chips-label{font-size:.72rem;color:var(--text-secondary);font-weight:500}
+.meal-actions-row{display:flex;gap:8px;flex-wrap:wrap}
+.meal-actions-row .glass-button-secondary{flex:1;min-width:0}
+.preset-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .preset-chip{background:var(--bg-elevated);border:1px solid var(--border-accent);color:var(--accent);border-radius:9999px;padding:5px 12px;font-size:.75rem;cursor:pointer;transition:all 200ms;min-height:32px;white-space:nowrap}
 .preset-chip:hover{background:var(--accent-dim);border-color:var(--accent)}
-.preset-save-meal{display:inline-flex;align-items:center;gap:4px;background:transparent;border:1px dashed rgba(255,255,255,.12);color:var(--text-muted);border-radius:var(--radius);padding:6px 12px;font-size:.72rem;cursor:pointer;transition:all 200ms;margin-top:8px}
-.preset-save-meal:hover{border-color:var(--border-accent);color:var(--accent);border-style:solid}
+.preset-save-meal{flex:none;display:inline-flex;align-items:center;gap:4px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-secondary);border-radius:.75rem;padding:8px 14px;font-size:.8rem;cursor:pointer;transition:all 200ms;min-height:40px;white-space:nowrap;font-family:var(--font-body)}
+.preset-save-meal:hover{border-color:var(--border-accent);color:var(--accent)}
 
 /* water tracker */
 .water-section{margin-top:16px}
@@ -446,10 +447,6 @@ select.glass-input{appearance:none;-webkit-appearance:none}
     <div class="glass-card card presets-card">
       <div class="card-title">Мои пресеты</div>
       <div class="presets-grid" id="presetsList"></div>
-      <div class="preset-save-row">
-        <input class="glass-input" id="presetName" type="text" placeholder="Например: Мой стандартный завтрак" aria-label="Название пресета" style="font-size:.85rem">
-        <button class="glass-button" type="button" id="btnSavePreset" style="white-space:nowrap;padding:.6rem 1rem;font-size:.8rem">Сохранить</button>
-      </div>
     </div>
 
     <div class="actions">
@@ -1008,31 +1005,31 @@ function renderTimeline() {
   document.getElementById("timeline").innerHTML = MEALS.map(m => {
     const mode = m.state.mode;
     let body;
-    if (mode === "grams") {
-      body = itemsHtml(m) +
-        '<button class="glass-button-secondary" type="button" data-act="add" data-meal="' + m.key + '">+ Добавить продукт</button>' +
-        barsHtml(m) +
-        '<div style="font-size:.78rem;color:var(--text-secondary);margin-top:6px">Клетчатка: <b style="color:var(--accent)">' + r0(fiberOfItems(m.state.items)) + ' г</b></div>';
-    } else if (mode === "cafe") {
-      body = cafeHtml(m);
-    } else {
-      body = plateHtml(m) +
-        '<p class="footnote">Тарелка показывает реальные продукты из этого приёма, сгруппированные по секциям. Переключитесь на «Граммы», чтобы добавить или заменить продукт.</p>';
-    }
 
-    // preset chips for this meal
+    // preset chips for this meal (always visible, any mode)
     const matchingPresets = state.presets.filter(p => p.mealKey === m.key);
     const presetChips = matchingPresets.length
-      ? '<div class="preset-chips"><span class="preset-chips-label">Пресеты:</span>' +
+      ? '<div class="preset-chips">' +
         matchingPresets.map(p =>
-          '<button class="preset-chip" type="button" data-act="preset-apply" data-meal="' + m.key + '" data-pid="' + p.id + '" title="Загрузить: ' + esc(p.name) + '">' + esc(p.name) + '</button>'
+          '<button class="preset-chip" type="button" data-act="preset-apply" data-meal="' + m.key + '" data-pid="' + p.id + '" title="Загрузить: ' + esc(p.name) + '">★ ' + esc(p.name) + '</button>'
         ).join("") + '</div>'
       : '';
 
-    // save preset button (only in grams mode)
-    const saveBtn = mode === "grams"
-      ? '<button class="preset-save-meal" type="button" data-act="preset-save-meal" data-meal="' + m.key + '">Сохранить как пресет</button>'
-      : '';
+    if (mode === "grams") {
+      body = presetChips +
+        itemsHtml(m) +
+        '<div class="meal-actions-row">' +
+          '<button class="glass-button-secondary" type="button" data-act="add" data-meal="' + m.key + '">+ Добавить продукт</button>' +
+          '<button class="preset-save-meal" type="button" data-act="preset-save-meal" data-meal="' + m.key + '" title="Сохранить текущий набор продуктов как пресет">★ Сохранить пресет</button>' +
+        '</div>' +
+        barsHtml(m) +
+        '<div style="font-size:.78rem;color:var(--text-secondary);margin-top:6px">Клетчатка: <b style="color:var(--accent)">' + r0(fiberOfItems(m.state.items)) + ' г</b></div>';
+    } else if (mode === "cafe") {
+      body = cafeHtml(m) + presetChips;
+    } else {
+      body = presetChips + plateHtml(m) +
+        '<p class="footnote">Переключитесь на «Граммы», чтобы добавить или заменить продукт.</p>';
+    }
 
     const hints = (m.note ? ['<div class="hint"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M7 4.2v.1M7 6.2v3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><div>' + esc(m.note) + '</div></div>'] : [])
       .concat(m.hints.map(h => '<div class="hint"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5v2M7 10.5v2M1.5 7h2M10.5 7h2M3.1 3.1l1.4 1.4M9.5 9.5l1.4 1.4M10.9 3.1L9.5 4.5M4.5 9.5 3.1 10.9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><div>' + esc(h) + '</div></div>')).join("");
@@ -1048,7 +1045,7 @@ function renderTimeline() {
         '<button class="tab" type="button" data-act="mode" data-meal="' + m.key + '" data-mode="plate" aria-pressed="' + (mode === "plate") + '">Тарелка</button>' +
         '<button class="tab" type="button" data-act="mode" data-meal="' + m.key + '" data-mode="cafe" aria-pressed="' + (mode === "cafe") + '">Кафе и столовка</button>' +
       '</div>' +
-      '<div class="meal-body">' + hints + body + presetChips + saveBtn + '</div>' +
+      '<div class="meal-body">' + hints + body + '</div>' +
     '</article>';
   }).join("");
 }
@@ -1479,20 +1476,14 @@ document.getElementById("tagSupps").addEventListener("click", e => {
 document.getElementById("btnRebuild").addEventListener("click", () => { recompute(true); render(); toast("Меню пересобрано под текущие параметры"); });
 
 /* ================= ПРЕСЕТЫ ================= */
-const PRESET_MEAL_NAMES = {
-  breakfast_pre:"Завтрак", breakfast:"Завтрак", pre:"Обед",
-  post:"После тренировки", evening:"Вечер",
-  r_breakfast:"Завтрак", r_lunch:"Обед", r_snack:"Полдник", r_dinner:"Ужин"
-};
-
 function renderPresets() {
   const el = document.getElementById("presetsList");
   if (!el) return;
-  if (!state.presets.length) { el.innerHTML = '<div class="preset-empty">Нет пресетов. Сохраните набор продуктов в любом приёме пищи кнопкой «Сохранить пресет».</div>'; return; }
+  if (!state.presets.length) { el.innerHTML = '<div class="preset-empty">Сохраните набор продуктов в любом приёме кнопкой «Сохранить как пресет» ниже списка продуктов.</div>'; return; }
   el.innerHTML = state.presets.map(p =>
     '<div class="preset-row">' +
-      '<button class="preset-name" type="button" data-act="preset-load" data-pid="' + p.id + '" title="Загрузить в такой же приём">' + esc(p.name) +
-      '<span class="preset-badge">' + esc(p.mealName || PRESET_MEAL_NAMES[p.mealKey] || "Приём") + '</span></button>' +
+      '<button class="preset-name" type="button" data-act="preset-load" data-pid="' + p.id + '" title="Загрузить">' + esc(p.name) +
+      '<span class="preset-badge">' + esc(p.mealName || "Приём") + '</span></button>' +
       '<button class="icon-btn" type="button" data-act="preset-del" data-pid="' + p.id + '" title="Удалить" aria-label="Удалить пресет">' +
         '<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>' +
       '</button>' +
@@ -1500,44 +1491,24 @@ function renderPresets() {
   ).join("");
 }
 
-document.querySelector(".presets-grid") && document.querySelector(".presets-card")?.addEventListener("click", e => {
+document.querySelector(".presets-card")?.addEventListener("click", e => {
   const b = e.target.closest("[data-act]"); if (!b) return;
   const act = b.dataset.act, pid = b.dataset.pid;
   if (act === "preset-load") {
     const pr = state.presets.find(x => x.id === pid);
     if (!pr) return;
     const meal = MEALS.find(m => m.key === pr.mealKey);
-    if (!meal) { toast("Приём «" + (pr.mealName || pr.mealKey) + "» не найден в текущем меню"); return; }
+    if (!meal) { toast("Приём «" + (pr.mealName || "") + "» не найден в текущем меню"); return; }
     state.mealState[pr.mealKey].items = JSON.parse(JSON.stringify(pr.items));
     state.mealState[pr.mealKey].touched = true;
     refresh();
-    toast("Пресет «" + pr.name + "» загружен в " + (pr.mealName || PRESET_MEAL_NAMES[pr.mealKey] || "приём"));
+    toast("Пресет «" + pr.name + "» загружен");
   } else if (act === "preset-del") {
     state.presets = state.presets.filter(x => x.id !== pid);
     persist();
     renderPresets();
     toast("Пресет удалён");
   }
-});
-
-document.getElementById("btnSavePreset")?.addEventListener("click", () => {
-  const nameEl = document.getElementById("presetName");
-  const name = (nameEl.value || "").trim();
-  if (!name) { nameEl.focus(); toast("Введите название пресета"); return; }
-  // сохраняем последний кликнутый приём, или первый
-  const lastMealKey = window._lastPresetMealKey || (MEALS[0] && MEALS[0].key);
-  const meal = MEALS.find(m => m.key === lastMealKey);
-  if (!meal) { toast("Выберите приём пищи для сохранения"); return; }
-  state.presets.push({
-    id:"pr_" + Date.now().toString(36), name, timestamp:Date.now(),
-    items:JSON.parse(JSON.stringify(state.mealState[lastMealKey].items)),
-    mealKey:lastMealKey,
-    mealName:meal.name
-  });
-  persist();
-  nameEl.value = "";
-  renderPresets();
-  toast("Пресет «" + name + "» сохранён для «" + meal.name + "»");
 });
 
 document.getElementById("timeline").addEventListener("click", e => {
